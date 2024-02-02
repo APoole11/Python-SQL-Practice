@@ -4,16 +4,16 @@ import mysql.connector
 from datetime import datetime
 from dotenv import load_dotenv
 
-def main():
+load_dotenv()
+RAPIDAPI_KEY = os.getenv('RAPIDAPI_KEY')
+RAPIDAPI_HOST = os.getenv('RAPIDAPI_HOST')
+DB_HOST = os.getenv('DB_HOST')
+DB_USER = os.getenv('DB_USER')
+DB_PASSWORD = os.getenv('DB_PASSWORD')
+DB_DATABASE = os.getenv('DB_DATABASE')
 
-   load_dotenv()
-   RAPIDAPI_KEY = os.getenv('RAPIDAPI_KEY')
-   RAPIDAPI_HOST = os.getenv('RAPIDAPI_HOST')
-   DB_HOST = os.getenv('DB_HOST')
-   DB_USER = os.getenv('DB_USER')
-   DB_PASSWORD = os.getenv('DB_PASSWORD')
-   DB_DATABASE = os.getenv('DB_DATABASE')
-   
+
+def main():
    # get response from api
    response = get_weather()
 
