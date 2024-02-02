@@ -1,1 +1,1 @@
-Hello
+This simple program demonstrates my ability to interact with API's using Python, as well as my ability to use python to insert data into a database using SQL
