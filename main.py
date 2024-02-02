@@ -12,7 +12,6 @@ DB_USER = os.getenv('DB_USER')
 DB_PASSWORD = os.getenv('DB_PASSWORD')
 DB_DATABASE = os.getenv('DB_DATABASE')
 
-
 def main():
    # get response from api
    response = get_weather()
@@ -22,7 +21,6 @@ def main():
 
    # insert report into sql database
    insert_report(report_values)
-
 
 def get_weather():
    url = "https://open-weather13.p.rapidapi.com/city/flagstaff"
