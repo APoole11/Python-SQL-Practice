@@ -5,33 +5,53 @@ from datetime import datetime
 from dotenv import load_dotenv
 
 load_dotenv()
-RAPIDAPI_KEY = os.getenv('RAPIDAPI_KEY')
-RAPIDAPI_HOST = os.getenv('RAPIDAPI_HOST')
+# RAPIDAPI_KEY = os.getenv('RAPIDAPI_KEY')
+# RAPIDAPI_HOST = os.getenv('RAPIDAPI_HOST')
+
+USER_AGENT = os.getenv('USER_AGENT')
+
 DB_HOST = os.getenv('DB_HOST')
 DB_USER = os.getenv('DB_USER')
 DB_PASSWORD = os.getenv('DB_PASSWORD')
 DB_DATABASE = os.getenv('DB_DATABASE')
+
+LATITUDE  = '35.1779'
+LONGITUDE = '-111.6425'
+
+#https://api.weather.gov/points/-111.6425792165913,35.177927308568044/forecast
 
 def main():
    # get response from api
    response = get_weather()
 
    # print formatted weather report
-   report_values = print_report(response)
+   #report_values = print_report(response)
 
    # insert report into sql database
-   insert_report(report_values)
+   #insert_report(report_values)
 
 def get_weather():
-   url = "https://open-weather13.p.rapidapi.com/city/flagstaff"
+   base_url = "https://api.weather.gov"
+   endpoint = f"/points/{LATITUDE},{LONGITUDE}"
 
    headers = {
-      "X-RapidAPI-Key": RAPIDAPI_KEY,
-      "X-RapidAPI-Host": RAPIDAPI_HOST
+      "User-Agent": USER_AGENT,
+      "Accept": "application/geo+json",
    }
 
-   response = requests.get(url, headers=headers)
-   return response.json()
+   url = base_url + endpoint
+
+   try:
+      response = requests.get(url, headers=headers)
+
+      if response.status_code == 200:
+         response = response.json()
+         # Handle the data as needed
+         return response
+      else:
+         print(f"Error: {response.status_code}")
+   except Exception as e:
+      print(f"An error occurred: {e}")
 
 def print_report(response):
    current_time = datetime.now()
