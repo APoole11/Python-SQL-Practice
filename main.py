@@ -5,10 +5,13 @@ from datetime import datetime
 from dotenv import load_dotenv
 
 load_dotenv()
+
 # RAPIDAPI_KEY = os.getenv('RAPIDAPI_KEY')
 # RAPIDAPI_HOST = os.getenv('RAPIDAPI_HOST')
 
-USER_AGENT = os.getenv('USER_AGENT')
+# USER_AGENT = os.getenv('USER_AGENT')
+
+WEATHERAPI_KEY = os.getenv('WEATHERAPI_KEY')
 
 DB_HOST = os.getenv('DB_HOST')
 DB_USER = os.getenv('DB_USER')
@@ -18,52 +21,46 @@ DB_DATABASE = os.getenv('DB_DATABASE')
 LATITUDE  = '35.1779'
 LONGITUDE = '-111.6425'
 
-#https://api.weather.gov/points/-111.6425792165913,35.177927308568044/forecast
 
 def main():
    # get response from api
    response = get_weather()
 
    # print formatted weather report
-   #report_values = print_report(response)
+   report_values = handle_response(response)
 
    # insert report into sql database
-   #insert_report(report_values)
+   insert_report(report_values)
 
 def get_weather():
-   base_url = "https://api.weather.gov"
-   endpoint = f"/points/{LATITUDE},{LONGITUDE}"
-
-   headers = {
-      "User-Agent": USER_AGENT,
-      "Accept": "application/geo+json",
-   }
-
-   url = base_url + endpoint
+   call_url = f'https://api.weatherapi.com/v1/forecast.json?key={WEATHERAPI_KEY}&q={LATITUDE},{LONGITUDE}&days=3&aqi=no&alerts=no'
 
    try:
-      response = requests.get(url, headers=headers)
+      response = requests.get(call_url)
 
       if response.status_code == 200:
          response = response.json()
-         # Handle the data as needed
          return response
+      
       else:
          print(f"Error: {response.status_code}")
+
    except Exception as e:
       print(f"An error occurred: {e}")
 
-def print_report(response):
-   current_time = datetime.now()
-   formatted_time = current_time.strftime("%Y-%m-%d %H:%M:%S")
-   condition = response['weather'][0]['main']
-   temp = response['main']['temp']
-   location = response['name']
+def handle_response(response):
+   current_time = response['location']['localtime']
+   # formatted_time = current_time.strftime("%Y-%m-%d %H:%M")
+   formatted_time = datetime.strptime(current_time, "%Y-%m-%d %H:%M")
+   print(formatted_time)
+   condition = response['current']['condition']['text']
+   temp = response['current']['temp_f']
+   location = response['location']['name']
 
-   print("\nTime: ", formatted_time)
-   print("Condition: ", condition)
+   print("\n       Time: ", formatted_time)
+   print("  Condition: ", condition)
    print("Temperature: ", temp)
-   print("Location: ", location)
+   print("   Location: ", location)
    print("\n")
 
    return [formatted_time, condition, temp, location]

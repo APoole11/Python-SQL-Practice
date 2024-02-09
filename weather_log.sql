@@ -11,3 +11,7 @@ curr_location VARCHAR(30)
 );
 
 SELECT * FROM weather_log
+
+
+
+
